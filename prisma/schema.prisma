@@ -1,0 +1,150 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  KASIR
+  PELANGGAN
+}
+
+enum TableStatus {
+  TERSEDIA
+  TERISI
+  KOTOR
+}
+
+enum OrderType {
+  DINE_IN
+  TAKEAWAY
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PREPARING
+  READY
+  SERVED
+  COMPLETED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  EXPIRED
+}
+
+model User {
+  id           String   @id @default(uuid())
+  name         String
+  email        String   @unique
+  password     String
+  role         Role     @default(PELANGGAN)
+  refreshToken String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("users")
+}
+
+model Category {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  menus     Menu[]
+
+  @@map("categories")
+}
+
+model Menu {
+  id          String     @id @default(uuid())
+  name        String
+  description String?
+  price       Int
+  imageUrl    String?
+  isAvailable Boolean    @default(true)
+  categoryId  String
+  category    Category   @relation(fields: [categoryId], references: [id])
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  orderItems  OrderItem[]
+
+  @@map("menus")
+}
+
+model Table {
+  id       String      @id @default(uuid())
+  number   Int         @unique
+  capacity Int
+  status   TableStatus @default(TERSEDIA)
+  qrCode   String      @unique
+  sessions Session[]
+
+  @@map("tables")
+}
+
+model Session {
+  id           String    @id @default(uuid())
+  tableId      String?
+  table        Table?    @relation(fields: [tableId], references: [id])
+  orderType    OrderType
+  customerName String?
+  token        String    @unique
+  isActive     Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+  expiredAt    DateTime
+  orders       Order[]
+
+  @@map("sessions")
+}
+
+model Order {
+  id           String      @id @default(uuid())
+  sessionId    String
+  session      Session     @relation(fields: [sessionId], references: [id])
+  status       OrderStatus @default(PENDING)
+  queueNumber  Int?
+  note         String?
+  totalAmount  Int
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  orderItems   OrderItem[]
+  payment      Payment?
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id       String  @id @default(uuid())
+  orderId  String
+  order    Order   @relation(fields: [orderId], references: [id])
+  menuId   String
+  menu     Menu    @relation(fields: [menuId], references: [id])
+  qty      Int
+  price    Int
+  note     String?
+
+  @@map("order_items")
+}
+
+model Payment {
+  id              String        @id @default(uuid())
+  orderId         String        @unique
+  order           Order         @relation(fields: [orderId], references: [id])
+  snapToken       String?
+  midtransOrderId String        @unique
+  amount          Int
+  status          PaymentStatus @default(PENDING)
+  paidAt          DateTime?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  @@map("payments")
+}
