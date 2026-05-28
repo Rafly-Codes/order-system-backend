@@ -1,9 +1,12 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Redirect } from '@nestjs/common';
+import { ApiExcludeController } from '@nestjs/swagger';
 
+@ApiExcludeController() // Agar controller utama ini tidak ikut masuk ke daftar dokumen Swagger
 @Controller()
 export class AppController {
   @Get()
-  getHello(): string {
-    return '🚀 Order System Backend is Online and Running!';
+  @Redirect('/api', 302) // Mengalihkan halaman utama langsung ke rute Swagger (/api)
+  getHello() {
+    return { url: '/api' };
   }
 }
