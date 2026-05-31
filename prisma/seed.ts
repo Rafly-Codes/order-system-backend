@@ -38,14 +38,9 @@ async function main() {
   // ── KATEGORI ──────────────────────────────────────────────────
   const categories = await Promise.all([
     prisma.category.upsert({
-      where: { name: 'Mie' },
+      where: { name: 'Makanan' },
       update: {},
-      create: { name: 'Mie' },
-    }),
-    prisma.category.upsert({
-      where: { name: 'Dimsum' },
-      update: {},
-      create: { name: 'Dimsum' },
+      create: { name: 'Makanan' },
     }),
     prisma.category.upsert({
       where: { name: 'Minuman' },
@@ -56,26 +51,21 @@ async function main() {
 
   console.log('✅ Categories created:', categories.map((c) => c.name).join(', '));
 
-  const [mie, dimsum, minuman] = categories;
+  const [makanan, minuman] = categories;
 
   // ── MENU ──────────────────────────────────────────────────────
   const menus = [
-    // Mie — ala Gacoan
-    { name: 'Mie Goreng', description: 'Mie goreng original', price: 14000, categoryId: mie.id },
-    { name: 'Mie Goreng Pedas', description: 'Mie goreng level pedas', price: 14000, categoryId: mie.id },
-    { name: 'Mie Kuah', description: 'Mie kuah kaldu ayam', price: 14000, categoryId: mie.id },
-    { name: 'Mie Kuah Pedas', description: 'Mie kuah pedas nampol', price: 14000, categoryId: mie.id },
-    { name: 'Mie Setan', description: 'Mie extra pedas level dewa', price: 17000, categoryId: mie.id },
-    // Dimsum
-    { name: 'Siomay', description: '5 pcs siomay udang', price: 12000, categoryId: dimsum.id },
-    { name: 'Hakau', description: '4 pcs hakau udang', price: 14000, categoryId: dimsum.id },
-    { name: 'Ceker Dimsum', description: '4 pcs ceker saus tiram', price: 12000, categoryId: dimsum.id },
-    { name: 'Lumpia Goreng', description: '4 pcs lumpia goreng crispy', price: 11000, categoryId: dimsum.id },
+    // Makanan
+    { name: 'Nasi Goreng', description: 'Nasi goreng spesial dengan telur dan ayam', price: 25000, categoryId: makanan.id },
+    { name: 'Ayam Goreng', description: 'Ayam goreng crispy bumbu rempah', price: 30000, categoryId: makanan.id },
+    { name: 'Bakmi', description: 'Bakmi goreng/kuah dengan topping ayam dan bakso', price: 28000, categoryId: makanan.id },
+    { name: 'Ikan Bakar', description: 'Ikan bakar bumbu kecap dengan lalapan', price: 45000, categoryId: makanan.id },
+    { name: 'Bebek Goreng', description: 'Bebek goreng empuk bumbu kuning dengan sambal', price: 50000, categoryId: makanan.id },
+    { name: 'Sop Buntut', description: 'Sop buntut sapi bening dengan sayuran segar', price: 65000, categoryId: makanan.id },
     // Minuman
-    { name: 'Es Teh Manis', description: 'Teh manis dingin segar', price: 5000, categoryId: minuman.id },
-    { name: 'Es Jeruk', description: 'Jeruk peras segar', price: 8000, categoryId: minuman.id },
-    { name: 'Kopi Hitam', description: 'Kopi hitam panas/dingin', price: 8000, categoryId: minuman.id },
-    { name: 'Air Mineral', description: 'Air mineral botol', price: 4000, categoryId: minuman.id },
+    { name: 'Es Teh Manis', description: 'Teh manis dingin segar', price: 8000, categoryId: minuman.id },
+    { name: 'Jus Jeruk', description: 'Jus jeruk peras segar tanpa pengawet', price: 15000, categoryId: minuman.id },
+    { name: 'Es Kelapa Muda', description: 'Kelapa muda segar dengan es batu', price: 18000, categoryId: minuman.id },
   ];
 
   for (const menu of menus) {
