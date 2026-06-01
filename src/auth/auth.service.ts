@@ -26,9 +26,14 @@ export class AuthService {
     const hashed = await bcrypt.hash(dto.password, 10);
 
     const user = await this.prisma.user.create({
-      data: { name: dto.name, email: dto.email, password: hashed, role: dto.role},
-      select: { id: true, name: true, email: true, role: true, createdAt: true },
-    });
+  data: { 
+    name: dto.name, 
+    email: dto.email, 
+    password: hashed,
+    role: dto.role, // 👈 Tambahkan baris ini!
+  },
+  select: { id: true, name: true, email: true, role: true, createdAt: true },
+});
 
     const tokens = await this.generateTokens(user.id, user.email, user.role);
     await this.usersService.updateRefreshToken(user.id, tokens.refreshToken);
