@@ -9,8 +9,14 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.RegisterDto = void 0;
+exports.RegisterDto = exports.Role = void 0;
 const class_validator_1 = require("class-validator");
+var Role;
+(function (Role) {
+    Role["ADMIN"] = "ADMIN";
+    Role["KASIR"] = "KASIR";
+    Role["PELANGGAN"] = "PELANGGAN";
+})(Role || (exports.Role = Role = {}));
 class RegisterDto {
 }
 exports.RegisterDto = RegisterDto;
@@ -28,4 +34,9 @@ __decorate([
     (0, class_validator_1.MinLength)(6, { message: 'Password minimal 6 karakter' }),
     __metadata("design:type", String)
 ], RegisterDto.prototype, "password", void 0);
+__decorate([
+    (0, class_validator_1.IsEnum)(Role, { message: 'Role harus berupa ADMIN, KASIR, atau PELANGGAN' }),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], RegisterDto.prototype, "role", void 0);
 //# sourceMappingURL=register.dto.js.map

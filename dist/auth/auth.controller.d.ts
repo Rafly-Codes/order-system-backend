@@ -9,8 +9,8 @@ export declare class AuthController {
         refreshToken: string;
         user: {
             id: string;
-            email: string;
             name: string;
+            email: string;
             role: import(".prisma/client").$Enums.Role;
             createdAt: Date;
         };
@@ -20,8 +20,8 @@ export declare class AuthController {
         refreshToken: string;
         user: {
             id: string;
-            email: string;
             name: string;
+            email: string;
             role: import(".prisma/client").$Enums.Role;
             createdAt: Date;
             updatedAt: Date;

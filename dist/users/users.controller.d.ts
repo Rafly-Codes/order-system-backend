@@ -9,22 +9,22 @@ export declare class UsersController {
     constructor(usersService: UsersService);
     findAll(): Promise<{
         id: string;
-        email: string;
         name: string;
+        email: string;
         role: import(".prisma/client").$Enums.Role;
         createdAt: Date;
     }[]>;
     findOne(id: string): Promise<{
         id: string;
-        email: string;
         name: string;
+        email: string;
         role: import(".prisma/client").$Enums.Role;
         createdAt: Date;
     }>;
     update(id: string, dto: UpdateUserDto): Promise<{
         id: string;
-        email: string;
         name: string;
+        email: string;
         role: import(".prisma/client").$Enums.Role;
         createdAt: Date;
     }>;
