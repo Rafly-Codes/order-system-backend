@@ -18,7 +18,7 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  // ── Register ──────────────────────────────────────────────────
+  // ── REGISTER ──────────────────────────────────────────────────
   async register(dto: RegisterDto) {
     const existing = await this.usersService.findByEmail(dto.email);
     if (existing) throw new ConflictException('Email sudah terdaftar');
@@ -26,14 +26,20 @@ export class AuthService {
     const hashed = await bcrypt.hash(dto.password, 10);
 
     const user = await this.prisma.user.create({
-  data: { 
-    name: dto.name, 
-    email: dto.email, 
-    password: hashed,
-    role: dto.role, // 👈 Tambahkan baris ini!
-  },
-  select: { id: true, name: true, email: true, role: true, createdAt: true },
-});
+      data: { 
+        name: dto.name, 
+        email: dto.email, 
+        password: hashed,
+        role: dto.role, 
+      },
+      select: { 
+        id: true, 
+        name: true, 
+        email: true, 
+        role: true, 
+        createdAt: true 
+      },
+    });
 
     const tokens = await this.generateTokens(user.id, user.email, user.role);
     await this.usersService.updateRefreshToken(user.id, tokens.refreshToken);
@@ -41,7 +47,7 @@ export class AuthService {
     return { user, ...tokens };
   }
 
-  // ── Login ─────────────────────────────────────────────────────
+  // ── LOGIN ─────────────────────────────────────────────────────
   async login(dto: LoginDto) {
     const user = await this.usersService.findByEmail(dto.email);
     if (!user) throw new UnauthorizedException('Email atau password salah');
@@ -52,24 +58,35 @@ export class AuthService {
     const tokens = await this.generateTokens(user.id, user.email, user.role);
     await this.usersService.updateRefreshToken(user.id, tokens.refreshToken);
 
+    // Memisahkan password dan refreshToken agar tidak ikut terkirim ke frontend
     const { password, refreshToken, ...safeUser } = user;
-    return { user: safeUser, ...tokens };
+
+    // Output JSON: { user: { id, name, email, role }, accessToken, refreshToken }
+    return { 
+      user: {
+        id: safeUser.id,
+        name: safeUser.name,
+        email: safeUser.email,
+        role: safeUser.role || 'customer' // Fallback jika role kosong di DB
+      }, 
+      ...tokens 
+    };
   }
 
-  // ── Refresh Token ─────────────────────────────────────────────
+  // ── REFRESH TOKENS ────────────────────────────────────────────
   async refreshTokens(userId: string, email: string, role: string) {
     const tokens = await this.generateTokens(userId, email, role);
     await this.usersService.updateRefreshToken(userId, tokens.refreshToken);
     return tokens;
   }
 
-  // ── Logout ────────────────────────────────────────────────────
+  // ── LOGOUT ────────────────────────────────────────────────────
   async logout(userId: string) {
     await this.usersService.updateRefreshToken(userId, null);
     return { message: 'Logout berhasil' };
   }
 
-  // ── Helper: generate access + refresh token ───────────────────
+  // ── HELPER: GENERATE ACCESS + REFRESH TOKEN ───────────────────
   private async generateTokens(userId: string, email: string, role: string) {
     const payload = { sub: userId, email, role };
 

@@ -6,8 +6,20 @@ import { Role } from '@prisma/client';
 export class UsersService {
   constructor(private prisma: PrismaService) {}
 
+  // ── REVISI: Explicitly select all required fields including ROLE ──
   async findByEmail(email: string) {
-    return this.prisma.user.findUnique({ where: { email } });
+    return this.prisma.user.findUnique({ 
+      where: { email },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        password: true,     // Wajib diambil untuk divalidasi bcrypt di auth.service
+        role: true,         // <--- KUNCI UTAMA: Agar tidak bernilai undefined saat login
+        refreshToken: true,
+        createdAt: true,
+      }
+    });
   }
 
   async findById(id: string) {
@@ -48,4 +60,3 @@ export class UsersService {
     });
   }
 }
-
