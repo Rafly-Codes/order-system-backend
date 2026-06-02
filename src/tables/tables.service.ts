@@ -22,7 +22,6 @@ export class TablesService {
     });
     if (existing) throw new ConflictException(`Meja nomor ${dto.number} sudah ada`);
 
-    // Generate QR code unik — berisi UUID yang nanti di-encode jadi QR di frontend
     const qrCode = randomUUID();
 
     return this.prisma.table.create({
@@ -72,31 +71,26 @@ export class TablesService {
   // ── SESI QR ──────────────────────────────────────────────────
 
   async startSessionByQr(qrCode: string) {
-    // Validasi QR → cari meja
     const table = await this.prisma.table.findUnique({ where: { qrCode } });
     if (!table) throw new NotFoundException('QR code tidak valid');
 
     if (table.status === 'TERISI') {
-      // Cek apakah ada sesi aktif
       const activeSession = await this.prisma.session.findFirst({
         where: { tableId: table.id, isActive: true },
         include: { orders: true },
       });
       if (activeSession) {
-        // Kembalikan sesi yang sudah ada agar pelanggan bisa lanjut order
         return { table, session: activeSession, isNew: false };
       }
     }
 
-    // Nonaktifkan sesi lama kalau ada
     await this.prisma.session.updateMany({
       where: { tableId: table.id, isActive: true },
       data: { isActive: false },
     });
 
-    // Buat sesi baru
     const sessionToken = randomUUID();
-    const expiredAt = new Date(Date.now() + 1000 * 60 * 60 * 3); // 3 jam
+    const expiredAt = new Date(Date.now() + 1000 * 60 * 60 * 3);
 
     const session = await this.prisma.session.create({
       data: {
@@ -107,7 +101,6 @@ export class TablesService {
       },
     });
 
-    // Update status meja jadi TERISI
     await this.prisma.table.update({
       where: { id: table.id },
       data: { status: 'TERISI' },
@@ -122,7 +115,7 @@ export class TablesService {
     }
 
     const sessionToken = randomUUID();
-    const expiredAt = new Date(Date.now() + 1000 * 60 * 60 * 2); // 2 jam
+    const expiredAt = new Date(Date.now() + 1000 * 60 * 60 * 2);
 
     const session = await this.prisma.session.create({
       data: {
@@ -164,11 +157,11 @@ export class TablesService {
   async endSession(token: string) {
     const session = await this.getSessionByToken(token);
 
-    // Kembalikan status meja jadi KOTOR kalau dine-in
+    // Meja dikembalikan ke TERSEDIA karena 'KOTOR' sudah tidak ada
     if (session.tableId) {
       await this.prisma.table.update({
         where: { id: session.tableId },
-        data: { status: 'KOTOR' },
+        data: { status: 'TERSEDIA' },
       });
     }
 

@@ -30,7 +30,6 @@ export class PaymentsService {
     if (order.status === OrderStatus.CANCELLED) throw new BadRequestException('Order sudah dibatalkan');
     if (order.payment?.status === PaymentStatus.PAID) throw new BadRequestException('Order sudah dibayar');
 
-    // Untuk dine-in: harus sudah SERVED dulu
     if (
       order.session.orderType === 'DINE_IN' &&
       order.status !== OrderStatus.SERVED &&
@@ -39,7 +38,6 @@ export class PaymentsService {
       throw new BadRequestException('Pesanan dine-in harus sudah disajikan sebelum bayar');
     }
 
-    // Buat atau ambil record payment
     const payment = await this.prisma.payment.upsert({
       where: { orderId },
       create: {
@@ -51,7 +49,6 @@ export class PaymentsService {
       update: { status: PaymentStatus.PENDING },
     });
 
-    // Ambil QRIS setting
     const qrisUrl = process.env.QRIS_IMAGE_URL ?? null;
 
     return {
@@ -78,23 +75,21 @@ export class PaymentsService {
     if (!payment) throw new NotFoundException('Payment tidak ditemukan');
     if (payment.status === PaymentStatus.PAID) throw new BadRequestException('Sudah dikonfirmasi sebelumnya');
 
-    // Update payment → PAID
     await this.prisma.payment.update({
       where: { id: paymentId },
       data: { status: PaymentStatus.PAID, paidAt: new Date() },
     });
 
-    // Update order → COMPLETED
     await this.prisma.order.update({
       where: { id: payment.orderId },
       data: { status: OrderStatus.COMPLETED },
     });
 
-    // Kalau dine-in → meja jadi KOTOR, sesi nonaktif
+    // Kalau dine-in → meja jadi TERSEDIA, sesi nonaktif
     if (payment.order.session.orderType === 'DINE_IN' && payment.order.session.tableId) {
       await this.prisma.table.update({
         where: { id: payment.order.session.tableId },
-        data: { status: 'KOTOR' },
+        data: { status: 'TERSEDIA' },
       });
       await this.prisma.session.update({
         where: { id: payment.order.sessionId },
@@ -102,7 +97,6 @@ export class PaymentsService {
       });
     }
 
-    // Emit Socket.IO
     this.gateway.emitPaymentConfirmed(payment.orderId, payment.order.session.token);
 
     return { message: 'Pembayaran berhasil dikonfirmasi', method, paidAt: new Date() };
@@ -156,10 +150,6 @@ export class PaymentsService {
       meta: { total, page, limit, totalPages: Math.ceil(total / limit) },
     };
   }
-
-  // ── UPLOAD / UPDATE QRIS ──────────────────────────────────────
-  // QRIS disimpan sebagai env variable QRIS_IMAGE_URL
-  // Admin tinggal update env dengan URL gambar QRIS
 
   getQrisInfo() {
     return {
