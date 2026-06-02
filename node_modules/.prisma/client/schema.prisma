@@ -16,7 +16,6 @@ enum Role {
 enum TableStatus {
   TERSEDIA
   TERISI
-  KOTOR
 }
 
 enum OrderType {

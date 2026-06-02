@@ -67,7 +67,6 @@ async function main() {
     { name: 'Jus Jeruk', description: 'Jus jeruk peras segar tanpa pengawet', price: 15000, categoryId: minuman.id },
     { name: 'Es Kelapa Muda', description: 'Kelapa muda segar dengan es batu', price: 18000, categoryId: minuman.id },
   ];
-
   for (const menu of menus) {
     const existing = await prisma.menu.findFirst({ where: { name: menu.name } });
     if (!existing) {

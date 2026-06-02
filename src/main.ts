@@ -10,14 +10,12 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true, transform: true }));
   app.useGlobalFilters(new HttpExceptionFilter());
   
-  // REPAIR: Mengizinkan port 5173 dan port 3000 (Next.js)
+  // REVISI: Konfigurasi CORS yang lebih kebal dan dinamis untuk development lokal
   app.enableCors({ 
-    origin: [
-      'http://localhost:5173', 
-      'http://localhost:3000', 
-      process.env.FRONTEND_URL
-    ].filter(Boolean), // .filter(Boolean) memastikan jika process.env.FRONTEND_URL kosong tidak akan error
-    credentials: true 
+    origin: true, // Akan otomatis mengizinkan origin yang me-request (sangat aman untuk fase dev lokal -> backend ter-deploy)
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    allowedHeaders: 'Content-Type, Accept, Authorization, X-Session-Token, x-session-token',
+    credentials: true,
   });
 
   // Konfigurasi Swagger

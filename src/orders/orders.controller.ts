@@ -10,6 +10,7 @@ import {
   UseGuards,
   Headers,
   ParseUUIDPipe,
+  BadRequestException,
 } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { AddCartItemDto, UpdateCartItemDto } from './dto/add-cart-item.dto';
@@ -22,21 +23,25 @@ import { OrderStatus } from '@prisma/client';
 // Helper ambil session token dari header X-Session-Token
 function getSessionToken(headers: Record<string, string>): string {
   const token = headers['x-session-token'];
-  if (!token) throw new Error('Header X-Session-Token wajib diisi');
+  if (!token) {
+    // Diubah agar tidak jadi Error 500, melainkan Error 400 (Bad Request)
+    throw new BadRequestException('Header X-Session-Token wajib diisi');
+  }
   return token;
 }
 
 @Controller()
 export class OrdersController {
-  constructor(private ordersService: OrdersService) {}
+  constructor(private readonly ordersService: OrdersService) {}
 
   // ── KERANJANG ─────────────────────────────────────────────────
 
   // GET /cart — lihat isi keranjang
-  @Get('cart')
-  getCart(@Headers() headers: Record<string, string>) {
-    return this.ordersService.getCart(getSessionToken(headers));
-  }
+ @Get('cart')
+getCart(@Headers() headers: Record<string, string>) {
+  console.log("Request masuk ke /cart dengan header:", headers['x-session-token']);
+  return this.ordersService.getCart(getSessionToken(headers));
+}
 
   // POST /cart/items — tambah item ke keranjang
   @Post('cart/items')
