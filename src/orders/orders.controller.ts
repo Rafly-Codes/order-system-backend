@@ -13,6 +13,7 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { OrdersService } from './orders.service';
+import { CreateOrderDto } from './dto/create-order.dto';
 import { AddCartItemDto, UpdateCartItemDto } from './dto/add-cart-item.dto';
 import { UpdateOrderStatusDto } from './dto/update-order-status.dto';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
@@ -72,6 +73,12 @@ getCart(@Headers() headers: Record<string, string>) {
   }
 
   // ── ORDER ─────────────────────────────────────────────────────
+
+  // POST /orders — buat order langsung (DELIVERY/TAKEAWAY dari frontend)
+  @Post('orders')
+  createOrder(@Body() dto: CreateOrderDto) {
+    return this.ordersService.createOrder(dto);
+  }
 
   // POST /orders/submit — submit order ke dapur
   @Post('orders/submit')

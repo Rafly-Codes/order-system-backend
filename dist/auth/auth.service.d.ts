@@ -13,8 +13,8 @@ export declare class AuthService {
         refreshToken: string;
         user: {
             id: string;
-            name: string;
             email: string;
+            name: string;
             role: import(".prisma/client").$Enums.Role;
             createdAt: Date;
         };
@@ -26,9 +26,7 @@ export declare class AuthService {
             id: string;
             name: string;
             email: string;
-            role: import(".prisma/client").$Enums.Role;
-            createdAt: Date;
-            updatedAt: Date;
+            role: string;
         };
     }>;
     refreshTokens(userId: string, email: string, role: string): Promise<{

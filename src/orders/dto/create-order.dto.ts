@@ -1,14 +1,17 @@
 import { Type } from 'class-transformer';
 import {
   IsArray,
+  IsEnum,
   IsInt,
   IsNotEmpty,
   IsOptional,
   IsString,
   IsUUID,
   Min,
+  ValidateIf,
   ValidateNested,
 } from 'class-validator';
+import { OrderType, PaymentMethod } from '@prisma/client';
 
 export class OrderItemDto {
   @IsUUID()
@@ -17,7 +20,7 @@ export class OrderItemDto {
 
   @IsInt()
   @Min(1, { message: 'Qty minimal 1' })
-  qty: number;
+  quantity: number;
 
   @IsString()
   @IsOptional()
@@ -25,14 +28,29 @@ export class OrderItemDto {
 }
 
 export class CreateOrderDto {
-  @IsString()
-  @IsNotEmpty({ message: 'Session token wajib diisi' })
-  sessionToken: string;
+  @IsEnum(OrderType, { message: 'orderType harus DINE_IN, TAKEAWAY, atau DELIVERY' })
+  orderType: OrderType;
+
+  @IsEnum(PaymentMethod, { message: 'paymentMethod harus CASH, QRIS, atau TRANSFER' })
+  paymentMethod: PaymentMethod;
 
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => OrderItemDto)
   items: OrderItemDto[];
+
+  @ValidateIf((o) => o.orderType === 'DELIVERY')
+  @IsString()
+  @IsNotEmpty({ message: 'deliveryAddress wajib diisi untuk order DELIVERY' })
+  deliveryAddress?: string;
+
+  @IsString()
+  @IsOptional()
+  address?: string;
+
+  @IsString()
+  @IsOptional()
+  customerName?: string;
 
   @IsString()
   @IsOptional()

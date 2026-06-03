@@ -33,7 +33,13 @@ let AuthService = class AuthService {
                 password: hashed,
                 role: dto.role,
             },
-            select: { id: true, name: true, email: true, role: true, createdAt: true },
+            select: {
+                id: true,
+                name: true,
+                email: true,
+                role: true,
+                createdAt: true
+            },
         });
         const tokens = await this.generateTokens(user.id, user.email, user.role);
         await this.usersService.updateRefreshToken(user.id, tokens.refreshToken);
@@ -49,7 +55,15 @@ let AuthService = class AuthService {
         const tokens = await this.generateTokens(user.id, user.email, user.role);
         await this.usersService.updateRefreshToken(user.id, tokens.refreshToken);
         const { password, refreshToken, ...safeUser } = user;
-        return { user: safeUser, ...tokens };
+        return {
+            user: {
+                id: safeUser.id,
+                name: safeUser.name,
+                email: safeUser.email,
+                role: safeUser.role || 'customer'
+            },
+            ...tokens
+        };
     }
     async refreshTokens(userId, email, role) {
         const tokens = await this.generateTokens(userId, email, role);
