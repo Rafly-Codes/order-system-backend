@@ -125,6 +125,74 @@ export class OrdersService {
 
   // ── ORDER ────────────────────────────────────────────────────
 
+  async createOrder(dto: CreateOrderDto) {
+    if (!dto.items || dto.items.length === 0) {
+      throw new BadRequestException('Tambahkan minimal 1 item');
+    }
+
+    // Validasi menu dan hitung total
+    let totalAmount = 0;
+    const resolvedItems: { menuId: string; qty: number; price: number; note?: string }[] = [];
+
+    for (const item of dto.items) {
+      const menu = await this.prisma.menu.findUnique({ where: { id: item.menuId } });
+      if (!menu) throw new NotFoundException(`Menu tidak ditemukan`);
+      if (!menu.isAvailable) throw new BadRequestException(`Menu "${menu.name}" sedang tidak tersedia`);
+      const qty = item.quantity ?? 1;
+      totalAmount += menu.price * qty;
+      resolvedItems.push({ menuId: item.menuId, qty, price: menu.price, note: item.note });
+    }
+
+    // Buat sesi otomatis
+    const sessionToken = `order-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    const session = await this.prisma.session.create({
+      data: {
+        orderType: dto.orderType,
+        customerName: dto.customerName ?? null,
+        tableId: dto.tableId ?? null,
+        token: sessionToken,
+        isActive: true,
+        expiredAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
+      },
+    });
+
+    // Buat nomor antrian untuk TAKEAWAY
+    let queueNumber: number | null = null;
+    if (dto.orderType === 'TAKEAWAY') {
+      const lastQueue = await this.prisma.order.findFirst({
+        where: { status: { not: OrderStatus.CANCELLED } },
+        orderBy: { createdAt: 'desc' },
+        select: { queueNumber: true },
+      });
+      queueNumber = (lastQueue?.queueNumber ?? 0) + 1;
+    }
+
+    // Buat order langsung CONFIRMED
+    const order = await this.prisma.order.create({
+      data: {
+        sessionId: session.id,
+        status: OrderStatus.CONFIRMED,
+        totalAmount,
+        note: dto.note ?? null,
+        ...(queueNumber && { queueNumber }),
+        orderItems: { create: resolvedItems },
+      },
+      include: {
+        orderItems: { include: { menu: true } },
+        session: { select: { orderType: true, customerName: true, table: true, token: true } },
+      },
+    });
+
+    // Emit ke dapur
+    this.gateway.emitNewOrder(order);
+
+    return {
+      ...order,
+      paymentMethod: dto.paymentMethod,
+      sessionToken,
+    };
+  }
+
   async submitOrder(sessionToken: string) {
     const session = await this.getActiveSession(sessionToken);
     const cart = await this.getPendingCart(session.id);

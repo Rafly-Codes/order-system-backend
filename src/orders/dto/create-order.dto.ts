@@ -1,6 +1,7 @@
 import { Type } from 'class-transformer';
 import {
   IsArray,
+  IsEnum,
   IsInt,
   IsNotEmpty,
   IsOptional,
@@ -9,6 +10,12 @@ import {
   Min,
   ValidateNested,
 } from 'class-validator';
+import { OrderType } from '@prisma/client';
+
+export enum PaymentMethod {
+  CASH = 'CASH',
+  QRIS = 'QRIS',
+}
 
 export class OrderItemDto {
   @IsUUID()
@@ -25,9 +32,11 @@ export class OrderItemDto {
 }
 
 export class CreateOrderDto {
-  @IsString()
-  @IsNotEmpty({ message: 'Session token wajib diisi' })
-  sessionToken: string;
+  @IsEnum(OrderType, { message: 'orderType harus DINE_IN atau TAKEAWAY' })
+  orderType: OrderType;
+
+  @IsEnum(PaymentMethod, { message: 'paymentMethod harus CASH atau QRIS' })
+  paymentMethod: PaymentMethod;
 
   @IsArray()
   @ValidateNested({ each: true })
@@ -36,5 +45,14 @@ export class CreateOrderDto {
 
   @IsString()
   @IsOptional()
+  customerName?: string;
+
+  @IsString()
+  @IsOptional()
   note?: string;
+
+  // field tambahan dari frontend (diabaikan tapi diterima)
+  @IsString()
+  @IsOptional()
+  tableId?: string;
 }
