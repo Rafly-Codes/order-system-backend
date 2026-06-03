@@ -175,6 +175,7 @@ export class OrdersService {
         status: OrderStatus.CONFIRMED,
         totalAmount,
         note: dto.note ?? null,
+        paymentMethod: dto.paymentMethod ?? null,
         ...(queueNumber && { queueNumber }),
         orderItems: { create: resolvedItems },
       },
@@ -187,11 +188,7 @@ export class OrdersService {
     // Emit ke dapur
     this.gateway.emitNewOrder(order);
 
-    return {
-      ...order,
-      paymentMethod: dto.paymentMethod,
-      sessionToken,
-    };
+    return order;
   }
 
   async submitOrder(sessionToken: string) {
