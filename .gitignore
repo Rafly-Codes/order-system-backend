@@ -1,1 +1,4 @@
-ls dist
+node_modules
+dist
+.env
+*.tsbuildinfo
