@@ -1,5 +1,4 @@
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderStatusDto } from './dto/update-order-status.dto';
 import { AddCartItemDto, UpdateCartItemDto } from './dto/add-cart-item.dto';
 import { OrderStatus } from '@prisma/client';
@@ -21,23 +20,21 @@ export declare class OrdersService {
             };
         } & {
             id: string;
-            price: number;
             note: string | null;
+            price: number;
             orderId: string;
             menuId: string;
             qty: number;
         })[];
     } & {
         id: string;
-        createdAt: Date;
-        updatedAt: Date;
-        status: import(".prisma/client").$Enums.OrderStatus;
         sessionId: string;
+        status: import(".prisma/client").$Enums.OrderStatus;
         queueNumber: number | null;
         note: string | null;
         totalAmount: number;
-        deliveryAddress: string | null;
-        paymentMethod: import(".prisma/client").$Enums.PaymentMethod | null;
+        createdAt: Date;
+        updatedAt: Date;
     }) | {
         items: any[];
         totalAmount: number;
@@ -53,23 +50,21 @@ export declare class OrdersService {
             };
         } & {
             id: string;
-            price: number;
             note: string | null;
+            price: number;
             orderId: string;
             menuId: string;
             qty: number;
         })[];
     } & {
         id: string;
-        createdAt: Date;
-        updatedAt: Date;
-        status: import(".prisma/client").$Enums.OrderStatus;
         sessionId: string;
+        status: import(".prisma/client").$Enums.OrderStatus;
         queueNumber: number | null;
         note: string | null;
         totalAmount: number;
-        deliveryAddress: string | null;
-        paymentMethod: import(".prisma/client").$Enums.PaymentMethod | null;
+        createdAt: Date;
+        updatedAt: Date;
     }>;
     updateCartItem(sessionToken: string, itemId: string, dto: UpdateCartItemDto): Promise<{
         orderItems: ({
@@ -81,23 +76,21 @@ export declare class OrdersService {
             };
         } & {
             id: string;
-            price: number;
             note: string | null;
+            price: number;
             orderId: string;
             menuId: string;
             qty: number;
         })[];
     } & {
         id: string;
-        createdAt: Date;
-        updatedAt: Date;
-        status: import(".prisma/client").$Enums.OrderStatus;
         sessionId: string;
+        status: import(".prisma/client").$Enums.OrderStatus;
         queueNumber: number | null;
         note: string | null;
         totalAmount: number;
-        deliveryAddress: string | null;
-        paymentMethod: import(".prisma/client").$Enums.PaymentMethod | null;
+        createdAt: Date;
+        updatedAt: Date;
     }>;
     removeCartItem(sessionToken: string, itemId: string): Promise<{
         orderItems: ({
@@ -109,213 +102,167 @@ export declare class OrdersService {
             };
         } & {
             id: string;
-            price: number;
             note: string | null;
+            price: number;
             orderId: string;
             menuId: string;
             qty: number;
         })[];
     } & {
         id: string;
-        createdAt: Date;
-        updatedAt: Date;
-        status: import(".prisma/client").$Enums.OrderStatus;
         sessionId: string;
+        status: import(".prisma/client").$Enums.OrderStatus;
         queueNumber: number | null;
         note: string | null;
         totalAmount: number;
-        deliveryAddress: string | null;
-        paymentMethod: import(".prisma/client").$Enums.PaymentMethod | null;
-    }>;
-    createOrder(dto: CreateOrderDto): Promise<{
-        session: {
-            orderType: import(".prisma/client").$Enums.OrderType;
-            customerName: string;
-            token: string;
-        };
-        orderItems: ({
-            menu: {
-                id: string;
-                name: string;
-                createdAt: Date;
-                updatedAt: Date;
-                description: string | null;
-                price: number;
-                imageUrl: string | null;
-                categoryId: string;
-                isAvailable: boolean;
-            };
-        } & {
-            id: string;
-            price: number;
-            note: string | null;
-            orderId: string;
-            menuId: string;
-            qty: number;
-        })[];
-    } & {
-        id: string;
         createdAt: Date;
         updatedAt: Date;
-        status: import(".prisma/client").$Enums.OrderStatus;
-        sessionId: string;
-        queueNumber: number | null;
-        note: string | null;
-        totalAmount: number;
-        deliveryAddress: string | null;
-        paymentMethod: import(".prisma/client").$Enums.PaymentMethod | null;
     }>;
     submitOrder(sessionToken: string): Promise<{
         session: {
+            orderType: import(".prisma/client").$Enums.OrderType;
+            customerName: string;
             table: {
                 number: number;
                 id: string;
-                capacity: number;
                 status: import(".prisma/client").$Enums.TableStatus;
+                capacity: number;
                 qrCode: string;
             };
-            orderType: import(".prisma/client").$Enums.OrderType;
-            customerName: string;
         };
         orderItems: ({
             menu: {
                 id: string;
-                name: string;
                 createdAt: Date;
                 updatedAt: Date;
+                name: string;
                 description: string | null;
                 price: number;
                 imageUrl: string | null;
-                categoryId: string;
                 isAvailable: boolean;
+                categoryId: string;
             };
         } & {
             id: string;
-            price: number;
             note: string | null;
+            price: number;
             orderId: string;
             menuId: string;
             qty: number;
         })[];
     } & {
         id: string;
-        createdAt: Date;
-        updatedAt: Date;
-        status: import(".prisma/client").$Enums.OrderStatus;
         sessionId: string;
+        status: import(".prisma/client").$Enums.OrderStatus;
         queueNumber: number | null;
         note: string | null;
         totalAmount: number;
-        deliveryAddress: string | null;
-        paymentMethod: import(".prisma/client").$Enums.PaymentMethod | null;
+        createdAt: Date;
+        updatedAt: Date;
     }>;
     getOrderById(orderId: string): Promise<{
         session: {
+            token: string;
+            orderType: import(".prisma/client").$Enums.OrderType;
+            customerName: string;
             table: {
                 number: number;
                 id: string;
-                capacity: number;
                 status: import(".prisma/client").$Enums.TableStatus;
+                capacity: number;
                 qrCode: string;
             };
-            orderType: import(".prisma/client").$Enums.OrderType;
-            customerName: string;
-            token: string;
         };
+        orderItems: ({
+            menu: {
+                id: string;
+                createdAt: Date;
+                updatedAt: Date;
+                name: string;
+                description: string | null;
+                price: number;
+                imageUrl: string | null;
+                isAvailable: boolean;
+                categoryId: string;
+            };
+        } & {
+            id: string;
+            note: string | null;
+            price: number;
+            orderId: string;
+            menuId: string;
+            qty: number;
+        })[];
         payment: {
             id: string;
+            status: import(".prisma/client").$Enums.PaymentStatus;
             createdAt: Date;
             updatedAt: Date;
-            status: import(".prisma/client").$Enums.PaymentStatus;
             orderId: string;
             snapToken: string | null;
             midtransOrderId: string;
             amount: number;
             paidAt: Date | null;
         };
-        orderItems: ({
-            menu: {
-                id: string;
-                name: string;
-                createdAt: Date;
-                updatedAt: Date;
-                description: string | null;
-                price: number;
-                imageUrl: string | null;
-                categoryId: string;
-                isAvailable: boolean;
-            };
-        } & {
-            id: string;
-            price: number;
-            note: string | null;
-            orderId: string;
-            menuId: string;
-            qty: number;
-        })[];
     } & {
         id: string;
-        createdAt: Date;
-        updatedAt: Date;
-        status: import(".prisma/client").$Enums.OrderStatus;
         sessionId: string;
+        status: import(".prisma/client").$Enums.OrderStatus;
         queueNumber: number | null;
         note: string | null;
         totalAmount: number;
-        deliveryAddress: string | null;
-        paymentMethod: import(".prisma/client").$Enums.PaymentMethod | null;
+        createdAt: Date;
+        updatedAt: Date;
     }>;
     getOrdersBySession(sessionToken: string): Promise<({
+        orderItems: ({
+            menu: {
+                id: string;
+                createdAt: Date;
+                updatedAt: Date;
+                name: string;
+                description: string | null;
+                price: number;
+                imageUrl: string | null;
+                isAvailable: boolean;
+                categoryId: string;
+            };
+        } & {
+            id: string;
+            note: string | null;
+            price: number;
+            orderId: string;
+            menuId: string;
+            qty: number;
+        })[];
         payment: {
             id: string;
+            status: import(".prisma/client").$Enums.PaymentStatus;
             createdAt: Date;
             updatedAt: Date;
-            status: import(".prisma/client").$Enums.PaymentStatus;
             orderId: string;
             snapToken: string | null;
             midtransOrderId: string;
             amount: number;
             paidAt: Date | null;
         };
-        orderItems: ({
-            menu: {
-                id: string;
-                name: string;
-                createdAt: Date;
-                updatedAt: Date;
-                description: string | null;
-                price: number;
-                imageUrl: string | null;
-                categoryId: string;
-                isAvailable: boolean;
-            };
-        } & {
-            id: string;
-            price: number;
-            note: string | null;
-            orderId: string;
-            menuId: string;
-            qty: number;
-        })[];
     } & {
         id: string;
-        createdAt: Date;
-        updatedAt: Date;
-        status: import(".prisma/client").$Enums.OrderStatus;
         sessionId: string;
+        status: import(".prisma/client").$Enums.OrderStatus;
         queueNumber: number | null;
         note: string | null;
         totalAmount: number;
-        deliveryAddress: string | null;
-        paymentMethod: import(".prisma/client").$Enums.PaymentMethod | null;
+        createdAt: Date;
+        updatedAt: Date;
     })[]>;
     getKitchenQueue(): Promise<({
         session: {
+            orderType: import(".prisma/client").$Enums.OrderType;
+            customerName: string;
             table: {
                 number: number;
             };
-            orderType: import(".prisma/client").$Enums.OrderType;
-            customerName: string;
         };
         orderItems: ({
             menu: {
@@ -323,122 +270,116 @@ export declare class OrdersService {
             };
         } & {
             id: string;
-            price: number;
             note: string | null;
+            price: number;
             orderId: string;
             menuId: string;
             qty: number;
         })[];
     } & {
         id: string;
-        createdAt: Date;
-        updatedAt: Date;
-        status: import(".prisma/client").$Enums.OrderStatus;
         sessionId: string;
+        status: import(".prisma/client").$Enums.OrderStatus;
         queueNumber: number | null;
         note: string | null;
         totalAmount: number;
-        deliveryAddress: string | null;
-        paymentMethod: import(".prisma/client").$Enums.PaymentMethod | null;
+        createdAt: Date;
+        updatedAt: Date;
     })[]>;
     updateOrderStatus(orderId: string, dto: UpdateOrderStatusDto): Promise<{
         session: {
+            token: string;
+            orderType: import(".prisma/client").$Enums.OrderType;
+            customerName: string;
             table: {
                 number: number;
                 id: string;
-                capacity: number;
                 status: import(".prisma/client").$Enums.TableStatus;
+                capacity: number;
                 qrCode: string;
             };
-            orderType: import(".prisma/client").$Enums.OrderType;
-            customerName: string;
-            token: string;
         };
         orderItems: ({
             menu: {
                 id: string;
-                name: string;
                 createdAt: Date;
                 updatedAt: Date;
+                name: string;
                 description: string | null;
                 price: number;
                 imageUrl: string | null;
-                categoryId: string;
                 isAvailable: boolean;
+                categoryId: string;
             };
         } & {
             id: string;
-            price: number;
             note: string | null;
+            price: number;
             orderId: string;
             menuId: string;
             qty: number;
         })[];
     } & {
         id: string;
-        createdAt: Date;
-        updatedAt: Date;
-        status: import(".prisma/client").$Enums.OrderStatus;
         sessionId: string;
+        status: import(".prisma/client").$Enums.OrderStatus;
         queueNumber: number | null;
         note: string | null;
         totalAmount: number;
-        deliveryAddress: string | null;
-        paymentMethod: import(".prisma/client").$Enums.PaymentMethod | null;
+        createdAt: Date;
+        updatedAt: Date;
     }>;
     getAllOrders(status?: OrderStatus): Promise<({
         session: {
+            orderType: import(".prisma/client").$Enums.OrderType;
+            customerName: string;
             table: {
                 number: number;
                 id: string;
-                capacity: number;
                 status: import(".prisma/client").$Enums.TableStatus;
+                capacity: number;
                 qrCode: string;
             };
-            orderType: import(".prisma/client").$Enums.OrderType;
-            customerName: string;
         };
+        orderItems: ({
+            menu: {
+                id: string;
+                createdAt: Date;
+                updatedAt: Date;
+                name: string;
+                description: string | null;
+                price: number;
+                imageUrl: string | null;
+                isAvailable: boolean;
+                categoryId: string;
+            };
+        } & {
+            id: string;
+            note: string | null;
+            price: number;
+            orderId: string;
+            menuId: string;
+            qty: number;
+        })[];
         payment: {
             id: string;
+            status: import(".prisma/client").$Enums.PaymentStatus;
             createdAt: Date;
             updatedAt: Date;
-            status: import(".prisma/client").$Enums.PaymentStatus;
             orderId: string;
             snapToken: string | null;
             midtransOrderId: string;
             amount: number;
             paidAt: Date | null;
         };
-        orderItems: ({
-            menu: {
-                id: string;
-                name: string;
-                createdAt: Date;
-                updatedAt: Date;
-                description: string | null;
-                price: number;
-                imageUrl: string | null;
-                categoryId: string;
-                isAvailable: boolean;
-            };
-        } & {
-            id: string;
-            price: number;
-            note: string | null;
-            orderId: string;
-            menuId: string;
-            qty: number;
-        })[];
     } & {
         id: string;
-        createdAt: Date;
-        updatedAt: Date;
-        status: import(".prisma/client").$Enums.OrderStatus;
         sessionId: string;
+        status: import(".prisma/client").$Enums.OrderStatus;
         queueNumber: number | null;
         note: string | null;
         totalAmount: number;
-        deliveryAddress: string | null;
-        paymentMethod: import(".prisma/client").$Enums.PaymentMethod | null;
+        createdAt: Date;
+        updatedAt: Date;
     })[]>;
 }

@@ -11,18 +11,18 @@ export declare class MenusController {
         };
     } & {
         id: string;
-        name: string;
         createdAt: Date;
+        name: string;
     })[]>;
     createCategory(dto: CreateCategoryDto): Promise<{
         id: string;
-        name: string;
         createdAt: Date;
+        name: string;
     }>;
     deleteCategory(id: string): Promise<{
         id: string;
-        name: string;
         createdAt: Date;
+        name: string;
     }>;
     findAllMenus(categoryId?: string, available?: string): Promise<({
         category: {
@@ -31,92 +31,92 @@ export declare class MenusController {
         };
     } & {
         id: string;
-        name: string;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         description: string | null;
         price: number;
         imageUrl: string | null;
-        categoryId: string;
         isAvailable: boolean;
+        categoryId: string;
     })[]>;
     findOneMenu(id: string): Promise<{
         category: {
             id: string;
-            name: string;
             createdAt: Date;
+            name: string;
         };
     } & {
         id: string;
-        name: string;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         description: string | null;
         price: number;
         imageUrl: string | null;
-        categoryId: string;
         isAvailable: boolean;
+        categoryId: string;
     }>;
     createMenu(dto: CreateMenuDto): Promise<{
         category: {
             id: string;
-            name: string;
             createdAt: Date;
+            name: string;
         };
     } & {
         id: string;
-        name: string;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         description: string | null;
         price: number;
         imageUrl: string | null;
-        categoryId: string;
         isAvailable: boolean;
+        categoryId: string;
     }>;
     updateMenu(id: string, dto: UpdateMenuDto): Promise<{
         category: {
             id: string;
-            name: string;
             createdAt: Date;
+            name: string;
         };
     } & {
         id: string;
-        name: string;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         description: string | null;
         price: number;
         imageUrl: string | null;
-        categoryId: string;
         isAvailable: boolean;
+        categoryId: string;
     }>;
     toggleAvailability(id: string): Promise<{
         category: {
             id: string;
-            name: string;
             createdAt: Date;
+            name: string;
         };
     } & {
         id: string;
-        name: string;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         description: string | null;
         price: number;
         imageUrl: string | null;
-        categoryId: string;
         isAvailable: boolean;
+        categoryId: string;
     }>;
     deleteMenu(id: string): Promise<{
         id: string;
-        name: string;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         description: string | null;
         price: number;
         imageUrl: string | null;
-        categoryId: string;
         isAvailable: boolean;
+        categoryId: string;
     }>;
 }

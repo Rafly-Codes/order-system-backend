@@ -12,7 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateOrderDto = exports.OrderItemDto = void 0;
 const class_transformer_1 = require("class-transformer");
 const class_validator_1 = require("class-validator");
-const client_1 = require("@prisma/client");
 class OrderItemDto {
 }
 exports.OrderItemDto = OrderItemDto;
@@ -35,35 +34,16 @@ class CreateOrderDto {
 }
 exports.CreateOrderDto = CreateOrderDto;
 __decorate([
-    (0, class_validator_1.IsEnum)(client_1.OrderType, { message: 'orderType harus DINE_IN, TAKEAWAY, atau DELIVERY' }),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)({ message: 'Session token wajib diisi' }),
     __metadata("design:type", String)
-], CreateOrderDto.prototype, "orderType", void 0);
-__decorate([
-    (0, class_validator_1.IsEnum)(client_1.PaymentMethod, { message: 'paymentMethod harus CASH, QRIS, atau TRANSFER' }),
-    __metadata("design:type", String)
-], CreateOrderDto.prototype, "paymentMethod", void 0);
+], CreateOrderDto.prototype, "sessionToken", void 0);
 __decorate([
     (0, class_validator_1.IsArray)(),
     (0, class_validator_1.ValidateNested)({ each: true }),
     (0, class_transformer_1.Type)(() => OrderItemDto),
     __metadata("design:type", Array)
 ], CreateOrderDto.prototype, "items", void 0);
-__decorate([
-    (0, class_validator_1.ValidateIf)((o) => o.orderType === 'DELIVERY'),
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.IsNotEmpty)({ message: 'deliveryAddress wajib diisi untuk order DELIVERY' }),
-    __metadata("design:type", String)
-], CreateOrderDto.prototype, "deliveryAddress", void 0);
-__decorate([
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.IsOptional)(),
-    __metadata("design:type", String)
-], CreateOrderDto.prototype, "address", void 0);
-__decorate([
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.IsOptional)(),
-    __metadata("design:type", String)
-], CreateOrderDto.prototype, "customerName", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsOptional)(),

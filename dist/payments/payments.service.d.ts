@@ -26,14 +26,14 @@ export declare class PaymentsService {
     }>;
     confirmPayment(paymentId: string, method: 'TUNAI' | 'QRIS'): Promise<{
         message: string;
-        method: "QRIS" | "TUNAI";
+        method: "TUNAI" | "QRIS";
         paidAt: Date;
     }>;
     cancelPayment(paymentId: string): Promise<{
         id: string;
+        status: import(".prisma/client").$Enums.PaymentStatus;
         createdAt: Date;
         updatedAt: Date;
-        status: import(".prisma/client").$Enums.PaymentStatus;
         orderId: string;
         snapToken: string | null;
         midtransOrderId: string;
@@ -47,9 +47,9 @@ export declare class PaymentsService {
         };
     } & {
         id: string;
+        status: import(".prisma/client").$Enums.PaymentStatus;
         createdAt: Date;
         updatedAt: Date;
-        status: import(".prisma/client").$Enums.PaymentStatus;
         orderId: string;
         snapToken: string | null;
         midtransOrderId: string;
@@ -60,11 +60,11 @@ export declare class PaymentsService {
         data: ({
             order: {
                 session: {
+                    orderType: import(".prisma/client").$Enums.OrderType;
+                    customerName: string;
                     table: {
                         number: number;
                     };
-                    orderType: import(".prisma/client").$Enums.OrderType;
-                    customerName: string;
                 };
                 orderItems: ({
                     menu: {
@@ -72,29 +72,27 @@ export declare class PaymentsService {
                     };
                 } & {
                     id: string;
-                    price: number;
                     note: string | null;
+                    price: number;
                     orderId: string;
                     menuId: string;
                     qty: number;
                 })[];
             } & {
                 id: string;
-                createdAt: Date;
-                updatedAt: Date;
-                status: import(".prisma/client").$Enums.OrderStatus;
                 sessionId: string;
+                status: import(".prisma/client").$Enums.OrderStatus;
                 queueNumber: number | null;
                 note: string | null;
                 totalAmount: number;
-                deliveryAddress: string | null;
-                paymentMethod: import(".prisma/client").$Enums.PaymentMethod | null;
+                createdAt: Date;
+                updatedAt: Date;
             };
         } & {
             id: string;
+            status: import(".prisma/client").$Enums.PaymentStatus;
             createdAt: Date;
             updatedAt: Date;
-            status: import(".prisma/client").$Enums.PaymentStatus;
             orderId: string;
             snapToken: string | null;
             midtransOrderId: string;

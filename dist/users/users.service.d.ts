@@ -5,48 +5,48 @@ export declare class UsersService {
     constructor(prisma: PrismaService);
     findByEmail(email: string): Promise<{
         id: string;
-        email: string;
+        createdAt: Date;
         name: string;
+        email: string;
         password: string;
         role: import(".prisma/client").$Enums.Role;
         refreshToken: string;
-        createdAt: Date;
     }>;
     findById(id: string): Promise<{
         id: string;
-        email: string;
-        name: string;
-        role: import(".prisma/client").$Enums.Role;
         createdAt: Date;
+        name: string;
+        email: string;
+        role: import(".prisma/client").$Enums.Role;
     }>;
     findAll(): Promise<{
         id: string;
-        email: string;
-        name: string;
-        role: import(".prisma/client").$Enums.Role;
         createdAt: Date;
+        name: string;
+        email: string;
+        role: import(".prisma/client").$Enums.Role;
     }[]>;
     updateUser(id: string, data: {
         role?: Role;
         name?: string;
     }): Promise<{
         id: string;
-        email: string;
-        name: string;
-        role: import(".prisma/client").$Enums.Role;
         createdAt: Date;
+        name: string;
+        email: string;
+        role: import(".prisma/client").$Enums.Role;
     }>;
     deleteUser(id: string): Promise<{
         message: string;
     }>;
     updateRefreshToken(id: string, refreshToken: string | null): Promise<{
         id: string;
-        email: string;
+        createdAt: Date;
+        updatedAt: Date;
         name: string;
+        email: string;
         password: string;
         role: import(".prisma/client").$Enums.Role;
         refreshToken: string | null;
-        createdAt: Date;
-        updatedAt: Date;
     }>;
 }

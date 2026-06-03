@@ -13,77 +13,75 @@ export declare class TablesController {
     } & {
         number: number;
         id: string;
-        capacity: number;
         status: import(".prisma/client").$Enums.TableStatus;
+        capacity: number;
         qrCode: string;
     })[]>;
     findOne(id: string): Promise<{
         sessions: ({
             orders: {
                 id: string;
-                createdAt: Date;
-                updatedAt: Date;
-                status: import(".prisma/client").$Enums.OrderStatus;
                 sessionId: string;
+                status: import(".prisma/client").$Enums.OrderStatus;
                 queueNumber: number | null;
                 note: string | null;
                 totalAmount: number;
-                deliveryAddress: string | null;
-                paymentMethod: import(".prisma/client").$Enums.PaymentMethod | null;
+                createdAt: Date;
+                updatedAt: Date;
             }[];
         } & {
             id: string;
             createdAt: Date;
+            token: string;
             tableId: string | null;
             orderType: import(".prisma/client").$Enums.OrderType;
             customerName: string | null;
-            token: string;
             isActive: boolean;
             expiredAt: Date;
         })[];
     } & {
         number: number;
         id: string;
-        capacity: number;
         status: import(".prisma/client").$Enums.TableStatus;
+        capacity: number;
         qrCode: string;
     }>;
     create(dto: CreateTableDto): Promise<{
         number: number;
         id: string;
-        capacity: number;
         status: import(".prisma/client").$Enums.TableStatus;
+        capacity: number;
         qrCode: string;
     }>;
     updateStatus(id: string, dto: UpdateTableStatusDto): Promise<{
         number: number;
         id: string;
-        capacity: number;
         status: import(".prisma/client").$Enums.TableStatus;
+        capacity: number;
         qrCode: string;
     }>;
     remove(id: string): Promise<{
         number: number;
         id: string;
-        capacity: number;
         status: import(".prisma/client").$Enums.TableStatus;
+        capacity: number;
         qrCode: string;
     }>;
     startSessionByQr(qrCode: string): Promise<{
         table: {
             number: number;
             id: string;
-            capacity: number;
             status: import(".prisma/client").$Enums.TableStatus;
+            capacity: number;
             qrCode: string;
         };
         session: {
             id: string;
             createdAt: Date;
+            token: string;
             tableId: string | null;
             orderType: import(".prisma/client").$Enums.OrderType;
             customerName: string | null;
-            token: string;
             isActive: boolean;
             expiredAt: Date;
         };
@@ -93,10 +91,10 @@ export declare class TablesController {
         session: {
             id: string;
             createdAt: Date;
+            token: string;
             tableId: string | null;
             orderType: import(".prisma/client").$Enums.OrderType;
             customerName: string | null;
-            token: string;
             isActive: boolean;
             expiredAt: Date;
         };
@@ -105,60 +103,58 @@ export declare class TablesController {
         table: {
             number: number;
             id: string;
-            capacity: number;
             status: import(".prisma/client").$Enums.TableStatus;
+            capacity: number;
             qrCode: string;
         };
         orders: ({
             orderItems: ({
                 menu: {
                     id: string;
-                    name: string;
                     createdAt: Date;
                     updatedAt: Date;
+                    name: string;
                     description: string | null;
                     price: number;
                     imageUrl: string | null;
-                    categoryId: string;
                     isAvailable: boolean;
+                    categoryId: string;
                 };
             } & {
                 id: string;
-                price: number;
                 note: string | null;
+                price: number;
                 orderId: string;
                 menuId: string;
                 qty: number;
             })[];
         } & {
             id: string;
-            createdAt: Date;
-            updatedAt: Date;
-            status: import(".prisma/client").$Enums.OrderStatus;
             sessionId: string;
+            status: import(".prisma/client").$Enums.OrderStatus;
             queueNumber: number | null;
             note: string | null;
             totalAmount: number;
-            deliveryAddress: string | null;
-            paymentMethod: import(".prisma/client").$Enums.PaymentMethod | null;
+            createdAt: Date;
+            updatedAt: Date;
         })[];
     } & {
         id: string;
         createdAt: Date;
+        token: string;
         tableId: string | null;
         orderType: import(".prisma/client").$Enums.OrderType;
         customerName: string | null;
-        token: string;
         isActive: boolean;
         expiredAt: Date;
     }>;
     endSession(token: string): Promise<{
         id: string;
         createdAt: Date;
+        token: string;
         tableId: string | null;
         orderType: import(".prisma/client").$Enums.OrderType;
         customerName: string | null;
-        token: string;
         isActive: boolean;
         expiredAt: Date;
     }>;

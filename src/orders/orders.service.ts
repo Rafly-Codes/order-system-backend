@@ -123,63 +123,6 @@ export class OrdersService {
     return this.getPendingCart(session.id);
   }
 
-  // ── DIRECT ORDER (tanpa sesi) ────────────────────────────────
-
-  async createOrder(dto: CreateOrderDto) {
-    if (!dto.items || dto.items.length === 0) {
-      throw new BadRequestException('Tambahkan minimal 1 item');
-    }
-
-    // Validasi semua menu dan hitung total
-    let totalAmount = 0;
-    const resolvedItems: { menuId: string; qty: number; price: number; note?: string }[] = [];
-
-    for (const item of dto.items) {
-      const menu = await this.prisma.menu.findUnique({ where: { id: item.menuId } });
-      if (!menu) throw new NotFoundException(`Menu ID ${item.menuId} tidak ditemukan`);
-      if (!menu.isAvailable) throw new BadRequestException(`Menu "${menu.name}" sedang tidak tersedia`);
-      const qty = item.quantity ?? (item as any).qty ?? 1;
-      totalAmount += menu.price * qty;
-      resolvedItems.push({ menuId: item.menuId, qty, price: menu.price, note: item.note });
-    }
-
-    // Buat sesi sementara untuk order DELIVERY/TAKEAWAY
-    const sessionToken = `direct-${Date.now()}-${Math.random().toString(36).slice(2)}`;
-    const session = await this.prisma.session.create({
-      data: {
-        orderType: dto.orderType,
-        customerName: dto.customerName ?? null,
-        token: sessionToken,
-        isActive: true,
-        expiredAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 jam
-      },
-    });
-
-    // Buat order langsung CONFIRMED
-    const order = await this.prisma.order.create({
-      data: {
-        sessionId: session.id,
-        status: OrderStatus.CONFIRMED,
-        totalAmount,
-        deliveryAddress: dto.deliveryAddress ?? dto.address ?? null,
-        paymentMethod: dto.paymentMethod,
-        note: dto.note ?? null,
-        orderItems: {
-          create: resolvedItems,
-        },
-      },
-      include: {
-        orderItems: { include: { menu: true } },
-        session: { select: { orderType: true, customerName: true, token: true } },
-      },
-    });
-
-    // Emit ke dapur via Socket.IO
-    this.gateway.emitNewOrder(order);
-
-    return order;
-  }
-
   // ── ORDER ────────────────────────────────────────────────────
 
   async submitOrder(sessionToken: string) {

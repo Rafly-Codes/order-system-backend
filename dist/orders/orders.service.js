@@ -116,52 +116,6 @@ let OrdersService = class OrdersService {
         await this.recalcTotal(cart.id);
         return this.getPendingCart(session.id);
     }
-    async createOrder(dto) {
-        if (!dto.items || dto.items.length === 0) {
-            throw new common_1.BadRequestException('Tambahkan minimal 1 item');
-        }
-        let totalAmount = 0;
-        const resolvedItems = [];
-        for (const item of dto.items) {
-            const menu = await this.prisma.menu.findUnique({ where: { id: item.menuId } });
-            if (!menu)
-                throw new common_1.NotFoundException(`Menu ID ${item.menuId} tidak ditemukan`);
-            if (!menu.isAvailable)
-                throw new common_1.BadRequestException(`Menu "${menu.name}" sedang tidak tersedia`);
-            const qty = item.quantity ?? item.qty ?? 1;
-            totalAmount += menu.price * qty;
-            resolvedItems.push({ menuId: item.menuId, qty, price: menu.price, note: item.note });
-        }
-        const sessionToken = `direct-${Date.now()}-${Math.random().toString(36).slice(2)}`;
-        const session = await this.prisma.session.create({
-            data: {
-                orderType: dto.orderType,
-                customerName: dto.customerName ?? null,
-                token: sessionToken,
-                isActive: true,
-                expiredAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
-            },
-        });
-        const order = await this.prisma.order.create({
-            data: {
-                sessionId: session.id,
-                status: client_1.OrderStatus.CONFIRMED,
-                totalAmount,
-                deliveryAddress: dto.deliveryAddress ?? dto.address ?? null,
-                paymentMethod: dto.paymentMethod,
-                note: dto.note ?? null,
-                orderItems: {
-                    create: resolvedItems,
-                },
-            },
-            include: {
-                orderItems: { include: { menu: true } },
-                session: { select: { orderType: true, customerName: true, token: true } },
-            },
-        });
-        this.gateway.emitNewOrder(order);
-        return order;
-    }
     async submitOrder(sessionToken) {
         const session = await this.getActiveSession(sessionToken);
         const cart = await this.getPendingCart(session.id);

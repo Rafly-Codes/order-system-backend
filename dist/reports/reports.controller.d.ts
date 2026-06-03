@@ -30,14 +30,14 @@ export declare class ReportsController {
             };
         } & {
             id: string;
-            name: string;
             createdAt: Date;
             updatedAt: Date;
+            name: string;
             description: string | null;
             price: number;
             imageUrl: string | null;
-            categoryId: string;
             isAvailable: boolean;
+            categoryId: string;
         };
         totalQty: number;
         totalOrders: number;

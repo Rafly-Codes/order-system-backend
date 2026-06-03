@@ -7,8 +7,8 @@ export declare class MenusService {
     constructor(prisma: PrismaService);
     createCategory(dto: CreateCategoryDto): Promise<{
         id: string;
-        name: string;
         createdAt: Date;
+        name: string;
     }>;
     findAllCategories(): Promise<({
         _count: {
@@ -16,31 +16,31 @@ export declare class MenusService {
         };
     } & {
         id: string;
-        name: string;
         createdAt: Date;
+        name: string;
     })[]>;
     deleteCategory(id: string): Promise<{
         id: string;
-        name: string;
         createdAt: Date;
+        name: string;
     }>;
     private findCategoryOrFail;
     createMenu(dto: CreateMenuDto): Promise<{
         category: {
             id: string;
-            name: string;
             createdAt: Date;
+            name: string;
         };
     } & {
         id: string;
-        name: string;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         description: string | null;
         price: number;
         imageUrl: string | null;
-        categoryId: string;
         isAvailable: boolean;
+        categoryId: string;
     }>;
     findAllMenus(categoryId?: string, available?: boolean): Promise<({
         category: {
@@ -49,75 +49,75 @@ export declare class MenusService {
         };
     } & {
         id: string;
-        name: string;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         description: string | null;
         price: number;
         imageUrl: string | null;
-        categoryId: string;
         isAvailable: boolean;
+        categoryId: string;
     })[]>;
     findOneMenu(id: string): Promise<{
         category: {
             id: string;
-            name: string;
             createdAt: Date;
+            name: string;
         };
     } & {
         id: string;
-        name: string;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         description: string | null;
         price: number;
         imageUrl: string | null;
-        categoryId: string;
         isAvailable: boolean;
+        categoryId: string;
     }>;
     updateMenu(id: string, dto: UpdateMenuDto): Promise<{
         category: {
             id: string;
-            name: string;
             createdAt: Date;
+            name: string;
         };
     } & {
         id: string;
-        name: string;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         description: string | null;
         price: number;
         imageUrl: string | null;
-        categoryId: string;
         isAvailable: boolean;
+        categoryId: string;
     }>;
     deleteMenu(id: string): Promise<{
         id: string;
-        name: string;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         description: string | null;
         price: number;
         imageUrl: string | null;
-        categoryId: string;
         isAvailable: boolean;
+        categoryId: string;
     }>;
     toggleAvailability(id: string): Promise<{
         category: {
             id: string;
-            name: string;
             createdAt: Date;
+            name: string;
         };
     } & {
         id: string;
-        name: string;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         description: string | null;
         price: number;
         imageUrl: string | null;
-        categoryId: string;
         isAvailable: boolean;
+        categoryId: string;
     }>;
 }

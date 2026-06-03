@@ -15,7 +15,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.OrdersController = void 0;
 const common_1 = require("@nestjs/common");
 const orders_service_1 = require("./orders.service");
-const create_order_dto_1 = require("./dto/create-order.dto");
 const add_cart_item_dto_1 = require("./dto/add-cart-item.dto");
 const update_order_status_dto_1 = require("./dto/update-order-status.dto");
 const jwt_auth_guard_1 = require("../common/guards/jwt-auth.guard");
@@ -45,9 +44,6 @@ let OrdersController = class OrdersController {
     }
     removeCartItem(headers, id) {
         return this.ordersService.removeCartItem(getSessionToken(headers), id);
-    }
-    createOrder(dto) {
-        return this.ordersService.createOrder(dto);
     }
     submitOrder(headers) {
         return this.ordersService.submitOrder(getSessionToken(headers));
@@ -101,13 +97,6 @@ __decorate([
     __metadata("design:paramtypes", [Object, String]),
     __metadata("design:returntype", void 0)
 ], OrdersController.prototype, "removeCartItem", null);
-__decorate([
-    (0, common_1.Post)('orders'),
-    __param(0, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_order_dto_1.CreateOrderDto]),
-    __metadata("design:returntype", void 0)
-], OrdersController.prototype, "createOrder", null);
 __decorate([
     (0, common_1.Post)('orders/submit'),
     __param(0, (0, common_1.Headers)()),
