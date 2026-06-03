@@ -49,6 +49,7 @@ model User {
   refreshToken String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+  orders       Order[]
 
   @@map("users")
 }
@@ -108,6 +109,8 @@ model Order {
   id          String      @id @default(uuid())
   sessionId   String
   session     Session     @relation(fields: [sessionId], references: [id])
+  userId      String?
+  user        User?       @relation(fields: [userId], references: [id])
   status      OrderStatus @default(PENDING)
   queueNumber Int?
   note        String?

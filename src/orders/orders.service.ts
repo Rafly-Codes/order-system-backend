@@ -125,7 +125,7 @@ export class OrdersService {
 
   // ── ORDER ────────────────────────────────────────────────────
 
-  async createOrder(dto: CreateOrderDto) {
+  async createOrder(dto: CreateOrderDto, userId?: string) {
     if (!dto.items || dto.items.length === 0) {
       throw new BadRequestException('Tambahkan minimal 1 item');
     }
@@ -171,6 +171,7 @@ export class OrdersService {
     const order = await this.prisma.order.create({
       data: {
         sessionId: session.id,
+        userId: userId ?? null,
         status: OrderStatus.CONFIRMED,
         totalAmount,
         note: dto.note ?? null,
@@ -243,6 +244,18 @@ export class OrdersService {
     return this.prisma.order.findMany({
       where: { sessionId: session.id, status: { not: OrderStatus.PENDING } },
       include: { orderItems: { include: { menu: true } }, payment: true },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
+  async getOrdersByUser(userId: string) {
+    return this.prisma.order.findMany({
+      where: { userId, status: { not: OrderStatus.PENDING } },
+      include: {
+        orderItems: { include: { menu: true } },
+        session: { select: { orderType: true, customerName: true } },
+        payment: true,
+      },
       orderBy: { createdAt: 'desc' },
     });
   }

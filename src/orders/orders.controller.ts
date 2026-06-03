@@ -11,6 +11,8 @@ import {
   Headers,
   ParseUUIDPipe,
   BadRequestException,
+  Request,
+  Optional,
 } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
@@ -19,6 +21,7 @@ import { UpdateOrderStatusDto } from './dto/update-order-status.dto';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { Roles } from '../common/decorators/roles.decorator';
+import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { OrderStatus } from '@prisma/client';
 
 // Helper ambil session token dari header X-Session-Token
@@ -74,10 +77,18 @@ getCart(@Headers() headers: Record<string, string>) {
 
   // ── ORDER ─────────────────────────────────────────────────────
 
-  // POST /orders — buat order langsung (DINE_IN / TAKEAWAY)
+  // POST /orders — buat order langsung (DINE_IN / TAKEAWAY), JWT opsional
   @Post('orders')
-  createOrder(@Body() dto: CreateOrderDto) {
-    return this.ordersService.createOrder(dto);
+  createOrder(@Body() dto: CreateOrderDto, @Request() req: any) {
+    const userId = req.user?.id ?? null;
+    return this.ordersService.createOrder(dto, userId);
+  }
+
+  // GET /orders/me — semua order milik user yang login (JWT)
+  @Get('orders/me')
+  @UseGuards(JwtAuthGuard)
+  getMyOrdersByUser(@CurrentUser('id') userId: string) {
+    return this.ordersService.getOrdersByUser(userId);
   }
 
   // POST /orders/submit — submit dari keranjang sesi
